@@ -1,0 +1,179 @@
+Shared libraries with GCC on Linux
+https://www.cprogramming.com/tutorial/shared-libraries-linux-gcc.html
+======================================================
+sajjad@i80pc93:~$ cd Downloads/
+sajjad@i80pc93:~/Downloads$ mkdir clibs
+sajjad@i80pc93:~/Downloads$ cd clibs/
+sajjad@i80pc93:~/Downloads/clibs$ mkdir CompilingwithPositionIndCode
+sajjad@i80pc93:~/Downloads/clibs$ cd CompilingwithPositionIndCode/
+sajjad@i80pc93:~/Downloads/clibs/CompilingwithPositionIndCode$ vim foo.h
+sajjad@i80pc93:~/Downloads/clibs/CompilingwithPositionIndCode$ vim foo.c
+sajjad@i80pc93:~/Downloads/clibs/CompilingwithPositionIndCode$ vim main.c
+sajjad@i80pc93:~/Downloads/clibs/CompilingwithPositionIndCode$ cd ..
+sajjad@i80pc93:~/Downloads/clibs$ cp -r CompilingwithPositionIndCode SimpleExecute
+sajjad@i80pc93:~/Downloads/clibs$ cd SimpleExecute/
+sajjad@i80pc93:~/Downloads/clibs/SimpleExecute$ gcc -Wall main.c foo.c -o simplesajjad@i80pc93:~/Downloads/clibs/SimpleExecute$ ./simple 
+This is a shared library test...
+Hello, I am a shared library
+sajjad@i80pc93:~/Downloads/clibs/SimpleExecute$ cd Com
+bash: cd: Com: No such file or directory
+sajjad@i80pc93:~/Downloads/clibs/SimpleExecute$ cd ../CompilingwithPositionIndCode/
+sajjad@i80pc93:~/Downloads/clibs/CompilingwithPositionIndCode$ gcc -c -Wall -Werror -fpic foo.c
+sajjad@i80pc93:~/Downloads/clibs/CompilingwithPositionIndCode$ gcc -shared -o libfoo.so foo.o
+sajjad@i80pc93:~/Downloads/clibs/CompilingwithPositionIndCode$ gcc -Wall -o test main.c -lfoo
+/usr/bin/ld: cannot find -lfoo
+collect2: error: ld returned 1 exit status
+sajjad@i80pc93:~/Downloads/clibs/CompilingwithPositionIndCode$ gcc _L./ -Wall -o test main.c -lfoo
+gcc: error: _L./: No such file or directory
+sajjad@i80pc93:~/Downloads/clibs/CompilingwithPositionIndCode$ gcc -L./ -Wall -o test main.c -lfoo
+sajjad@i80pc93:~/Downloads/clibs/CompilingwithPositionIndCode$ ./test 
+./test: error while loading shared libraries: libfoo.so: cannot open shared object file: No such file or directory
+sajjad@i80pc93:~/Downloads/clibs/CompilingwithPositionIndCode$ echo $LD_LIBRARY_PATH
+
+sajjad@i80pc93:~/Downloads/clibs/CompilingwithPositionIndCode$ LD_LIBRARY_PATH=~/Downloads/clibs/CompilingwithPositionIndCode:$LD_LIBRARY_PATH
+sajjad@i80pc93:~/Downloads/clibs/CompilingwithPositionIndCode$ ./test 
+./test: error while loading shared libraries: libfoo.so: cannot open shared object file: No such file or directory
+sajjad@i80pc93:~/Downloads/clibs/CompilingwithPositionIndCode$ ll
+total 44
+drwxrwxr-x 2 sajjad sajjad 4096 Mai 30 13:38 ./
+drwxrwxr-x 4 sajjad sajjad 4096 Mai 30 13:35 ../
+-rw-rw-r-- 1 sajjad sajjad   84 Mai 30 13:32 foo.c
+-rw-rw-r-- 1 sajjad sajjad   78 Mai 30 13:31 foo.h
+-rw-rw-r-- 1 sajjad sajjad 1560 Mai 30 13:37 foo.o
+-rwxrwxr-x 1 sajjad sajjad 8112 Mai 30 13:37 libfoo.so*
+-rw-rw-r-- 1 sajjad sajjad  128 Mai 30 13:32 main.c
+-rwxrwxr-x 1 sajjad sajjad 8640 Mai 30 13:38 test*
+sajjad@i80pc93:~/Downloads/clibs/CompilingwithPositionIndCode$ LD_LIBRARY_PATH=/home/sajjad/Downloads/clibs/CompilingwithPositionIndCode:$LD_LIBRARY_PATH
+sajjad@i80pc93:~/Downloads/clibs/CompilingwithPositionIndCode$ ./test 
+./test: error while loading shared libraries: libfoo.so: cannot open shared object file: No such file or directory
+sajjad@i80pc93:~/Downloads/clibs/CompilingwithPositionIndCode$ export LD_LIBRARY_PATH=/home/sajjad/Downloads/clibs/CompilingwithPositionIndCode:$LD_LIBRARY_PATH
+sajjad@i80pc93:~/Downloads/clibs/CompilingwithPositionIndCode$ ./test 
+This is a shared library test...
+Hello, I am a shared library
+sajjad@i80pc93:~/Downloads/clibs/CompilingwithPositionIndCode$ unset LD_LIBRARY_PATH
+sajjad@i80pc93:~/Downloads/clibs/CompilingwithPositionIndCode$ ./test 
+./test: error while loading shared libraries: libfoo.so: cannot open shared object file: No such file or directory
+sajjad@i80pc93:~/Downloads/clibs/CompilingwithPositionIndCode$ gcc -L./ -Wl, -rpath=./ -Wall -o test main.c -lfoo
+gcc: error: unrecognized command line option ‘-rpath=./’
+sajjad@i80pc93:~/Downloads/clibs/CompilingwithPositionIndCode$ gcc -L./ -Wl, -rpath=. -Wall -o test main.c -lfoo
+gcc: error: unrecognized command line option ‘-rpath=.’
+sajjad@i80pc93:~/Downloads/clibs/CompilingwithPositionIndCode$ gcc -L./ -Wl, -rpath=/home/sajjad/Downloads/clibs/CompilingwithPositionIndCode -Wall -o test main.c -lfoo
+gcc: error: unrecognized command line option ‘-rpath=/home/sajjad/Downloads/clibs/CompilingwithPositionIndCode’
+sajjad@i80pc93:~/Downloads/clibs/CompilingwithPositionIndCode$ gcc -L./ -Wl,-rpath=/home/sajjad/Downloads/clibs/CompilingwithPositionIndCode -Wall -o test main.c -lfoo
+sajjad@i80pc93:~/Downloads/clibs/CompilingwithPositionIndCode$ ./test 
+This is a shared library test...
+Hello, I am a shared library
+sajjad@i80pc93:~/Downloads/clibs/CompilingwithPositionIndCode$ 
+
+
+======================================================
+Creating Libraries Static Library Setup
+https://randu.org/tutorials/c/libraries.php
+======================================================
+sajjad@i80pc93:~/Downloads/clibs/CompilingwithPositionIndCode$ cd ..
+sajjad@i80pc93:~/Downloads/clibs$ cp -r  CompilingwithPositionIndCode StaticLibrarySetup
+sajjad@i80pc93:~/Downloads/clibs$ cd StaticLibrarySetup/
+sajjad@i80pc93:~/Downloads/clibs/StaticLibrarySetup$ ls
+foo.c  foo.h  foo.o  libfoo.so  main.c  test
+sajjad@i80pc93:~/Downloads/clibs/StaticLibrarySetup$ rm -rf libfoo.so test 
+sajjad@i80pc93:~/Downloads/clibs/StaticLibrarySetup$ cp foo.c foo1.c
+sajjad@i80pc93:~/Downloads/clibs/StaticLibrarySetup$ cp foo.c foo2.c
+sajjad@i80pc93:~/Downloads/clibs/StaticLibrarySetup$ cp foo.h foo1.h
+sajjad@i80pc93:~/Downloads/clibs/StaticLibrarySetup$ cp foo.h foo2.h
+sajjad@i80pc93:~/Downloads/clibs/StaticLibrarySetup$ vim foo1.h 
+sajjad@i80pc93:~/Downloads/clibs/StaticLibrarySetup$ vim foo2.h 
+sajjad@i80pc93:~/Downloads/clibs/StaticLibrarySetup$ vim foo1.c 
+sajjad@i80pc93:~/Downloads/clibs/StaticLibrarySetup$ vim foo2.c 
+sajjad@i80pc93:~/Downloads/clibs/StaticLibrarySetup$ vim foo1.c 
+sajjad@i80pc93:~/Downloads/clibs/StaticLibrarySetup$ vim main.c 
+sajjad@i80pc93:~/Downloads/clibs/StaticLibrarySetup$ gcc -c -Wall -Werror -fpic foo.c
+sajjad@i80pc93:~/Downloads/clibs/StaticLibrarySetup$ gcc -c -Wall -Werror -fpic foo2.c
+sajjad@i80pc93:~/Downloads/clibs/StaticLibrarySetup$ gcc -c -Wall -Werror -fpic foo1.c
+sajjad@i80pc93:~/Downloads/clibs/StaticLibrarySetup$ gcc -c -Wall -Werror -fpic main.c 
+main.c: In function ‘main’:
+main.c:10:5: error: implicit declaration of function ‘foo1’ [-Werror=implicit-function-declaration]
+     foo1();
+     ^
+main.c:11:5: error: implicit declaration of function ‘foo2’ [-Werror=implicit-function-declaration]
+     foo2();
+     ^
+cc1: all warnings being treated as errors
+sajjad@i80pc93:~/Downloads/clibs/StaticLibrarySetup$ vim main.c 
+sajjad@i80pc93:~/Downloads/clibs/StaticLibrarySetup$ vim foo1.h 
+sajjad@i80pc93:~/Downloads/clibs/StaticLibrarySetup$ vim foo2.h 
+sajjad@i80pc93:~/Downloads/clibs/StaticLibrarySetup$ gcc -c -Wall -Werror -fpic foo.c
+sajjad@i80pc93:~/Downloads/clibs/StaticLibrarySetup$ gcc -c -Wall -Werror -fpic foo1.c
+sajjad@i80pc93:~/Downloads/clibs/StaticLibrarySetup$ gcc -c -Wall -Werror -fpic foo3.c
+gcc: error: foo3.c: No such file or directory
+gcc: fatal error: no input files
+compilation terminated.
+sajjad@i80pc93:~/Downloads/clibs/StaticLibrarySetup$ gcc -c -Wall -Werror -fpic foo2.c
+sajjad@i80pc93:~/Downloads/clibs/StaticLibrarySetup$ gcc -c -Wall -Werror -fpic main.c 
+sajjad@i80pc93:~/Downloads/clibs/StaticLibrarySetup$ ar rcs libmylib.a foo.o foo1.o foo2.o 
+sajjad@i80pc93:~/Downloads/clibs/StaticLibrarySetup$ cp -p libmylib.a mylib.a
+sajjad@i80pc93:~/Downloads/clibs/StaticLibrarySetup$ ls
+foo1.c  foo1.h  foo1.o  foo2.c  foo2.h  foo2.o  foo.c  foo.h  foo.o  libmylib.a  main.c  main.o  mylib.a
+sajjad@i80pc93:~/Downloads/clibs/StaticLibrarySetup$ gcc -o main main.o -L. -lmylib
+sajjad@i80pc93:~/Downloads/clibs/StaticLibrarySetup$ ls
+foo1.c  foo1.h  foo1.o  foo2.c  foo2.h  foo2.o  foo.c  foo.h  foo.o  libmylib.a  main  main.c  main.o  mylib.a
+sajjad@i80pc93:~/Downloads/clibs/StaticLibrarySetup$ ./main 
+This is a shared library test...
+Hello, I am a shared library
+Hello, I am a shared library1
+Hello, I am a shared library2
+sajjad@i80pc93:~/Downloads/clibs/StaticLibrarySetup$ 
+
+
+
+======================================================
+Creating Libraries Shared Library Setup
+https://randu.org/tutorials/c/libraries.php
+======================================================
+
+sajjad@i80pc93:~/Downloads/clibs/StaticLibrarySetup$ cp -r ../StaticLibrarySetup ../SharedLibrarySetup
+sajjad@i80pc93:~/Downloads/clibs/StaticLibrarySetup$ cd ../SharedLibrarySetup
+sajjad@i80pc93:~/Downloads/clibs/SharedLibrarySetup$ ls
+foo1.c  foo1.h  foo1.o  foo2.c  foo2.h  foo2.o  foo.c  foo.h  foo.o  libmylib.a  main  main.c  main.o  mylib.a
+sajjad@i80pc93:~/Downloads/clibs/SharedLibrarySetup$ rm -rf *.o *.a main
+sajjad@i80pc93:~/Downloads/clibs/SharedLibrarySetup$ ls
+foo1.c  foo1.h  foo2.c  foo2.h  foo.c  foo.h  main.c
+sajjad@i80pc93:~/Downloads/clibs/SharedLibrarySetup$ gcc -fPIC -c foo.c 
+sajjad@i80pc93:~/Downloads/clibs/SharedLibrarySetup$ gcc -fPIC -c foo1.c 
+sajjad@i80pc93:~/Downloads/clibs/SharedLibrarySetup$ gcc -fPIC -c foo2.c 
+sajjad@i80pc93:~/Downloads/clibs/SharedLibrarySetup$ gcc -shared -o libmylib.so foo.o foo1.o foo2.o 
+sajjad@i80pc93:~/Downloads/clibs/SharedLibrarySetup$ cp -p libmylib.a mylib.a
+cp: cannot stat 'libmylib.a': No such file or directory
+sajjad@i80pc93:~/Downloads/clibs/SharedLibrarySetup$ cp -p libmylib.so mylib.so
+sajjad@i80pc93:~/Downloads/clibs/SharedLibrarySetup$ gcc -o main main.o -L. -lmylib
+gcc: error: main.o: No such file or directory
+sajjad@i80pc93:~/Downloads/clibs/SharedLibrarySetup$ gcc -fPIC -c main.c
+sajjad@i80pc93:~/Downloads/clibs/SharedLibrarySetup$ ls
+foo1.c  foo1.h  foo1.o  foo2.c  foo2.h  foo2.o  foo.c  foo.h  foo.o  libmylib.so  main.c  main.o  mylib.so
+sajjad@i80pc93:~/Downloads/clibs/SharedLibrarySetup$ gcc -o main main.o -L. -lmylib
+sajjad@i80pc93:~/Downloads/clibs/SharedLibrarySetup$ pwd
+/home/sajjad/Downloads/clibs/SharedLibrarySetup
+sajjad@i80pc93:~/Downloads/clibs/SharedLibrarySetup$ export LD_LIBRARY_PATH=/home/sajjad/Downloads/clibs/SharedLibrarySetup:${LD_LIBRARY_PATH}
+sajjad@i80pc93:~/Downloads/clibs/SharedLibrarySetup$ ./main 
+This is a shared library test...
+Hello, I am a shared library
+Hello, I am a shared library1
+Hello, I am a shared library2
+sajjad@i80pc93:~/Downloads/clibs/SharedLibrarySetup$ 
+
+
+
+
+
+
+======================================================
+C Libraries
+
+https://www.cs.swarthmore.edu/~newhall/unixhelp/howto_C_libraries.html
+
+======================================================
+
+
+
+======================================================
+
+======================================================
